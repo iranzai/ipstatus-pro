@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ipstatuspro</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="" width="25" height="25" />
+    <strong>ip<span>status</span>pro</strong>
+    <button class="icon-button" id="refresh" type="button" aria-label="重新检测">↻</button>
+  </header>
+
+  <main>
+    <div class="eyebrow"><i id="state-dot"></i><span>CURRENT BROWSER EXIT</span><b id="state-label">正在检测</b></div>
+    <section class="ip-summary">
+      <small>当前出口 IP</small>
+      <strong id="ip-address">正在读取…</strong>
+      <span id="ip-version">--</span>
+    </section>
+
+    <section class="profile-grid" aria-label="IP 基础信息">
+      <div><small>ASN</small><strong id="asn">--</strong></div>
+      <div><small>公司 / 组织</small><strong id="company">--</strong></div>
+      <div><small>国家 / 地区</small><strong id="country">--</strong></div>
+      <div><small>城市</small><strong id="city">--</strong></div>
+      <div class="wide"><small>经纬度</small><strong id="coordinates">--</strong></div>
+      <div class="wide"><small>时区</small><strong id="timezone">--</strong></div>
+    </section>
+
+    <p class="error" id="error" hidden></p>
+    <button class="primary-button" id="open-page" type="button">流媒体检测 <span>→</span></button>
+    <p class="note">出口探测与查询请求沿用 Chrome 当前网络和代理设置。</p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
