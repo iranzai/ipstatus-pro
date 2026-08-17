@@ -7,8 +7,8 @@ const ALLOWED_PAGE_ORIGINS = new Set([
 
 const REQUEST_TIMEOUT = 15000;
 const MAX_REQUEST_BODY = 32 * 1024;
-const MAX_RESPONSE_BODY = 384 * 1024;
-const SAFE_HEADERS = new Set(['accept', 'accept-language', 'content-type']);
+const MAX_RESPONSE_BODY = 1024 * 1024;
+const SAFE_HEADERS = new Set(['accept', 'accept-language', 'content-type', 'authorization']);
 
 function isAllowedSender(sender) {
   if (sender.id !== chrome.runtime.id || !sender.url) return false;
@@ -16,7 +16,7 @@ function isAllowedSender(sender) {
   try {
     const url = new URL(sender.url);
     return ALLOWED_PAGE_ORIGINS.has(url.origin)
-      && (url.pathname.endsWith('/streaming.html') || url.pathname.startsWith('/streaming'));
+      && (url.pathname.endsWith('/streaming') || url.pathname.startsWith('/streaming'));
   } catch {
     return false;
   }
@@ -100,6 +100,8 @@ async function proxyFetch(input) {
         status: response.status,
         url: response.url,
         contentType: response.headers.get('content-type') || '',
+        headers: Object.fromEntries(response.headers.entries()),
+        rawHeaders: [...response.headers.entries()].map(([key, value]) => `${key}: ${value}`).join('\r\n'),
         body: content.text,
         truncated: content.truncated,
         latencyMs: Math.round(performance.now() - started),
@@ -158,3 +160,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   sendResponse({ ok: false, error: '不支持的命令' });
   return false;
 });
+
+

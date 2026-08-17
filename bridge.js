@@ -10,10 +10,14 @@ window.addEventListener('message', (event) => {
   const message = event.data;
   if (!message || message.source !== PAGE_SOURCE || typeof message.requestId !== 'string') return;
   if (!['PING', 'GET_PROXY_STATE', 'PROXY_FETCH'].includes(message.type)) return;
-  chrome.runtime.sendMessage({ type: message.type, request: message.request }).then(
-    (response) => sendToPage('RESPONSE', message.requestId, response || { ok: false, error: '扩展后台未响应' }),
-    (error) => sendToPage('RESPONSE', message.requestId, { ok: false, error: error?.message || '扩展通信失败' }),
-  );
+  try {
+    chrome.runtime.sendMessage({ type: message.type, request: message.request }).then(
+      (response) => sendToPage('RESPONSE', message.requestId, response || { ok: false, error: '扩展后台未响应' }),
+      (error) => sendToPage('RESPONSE', message.requestId, { ok: false, error: error?.message || '扩展通信失败' }),
+    );
+  } catch (error) {
+    sendToPage('RESPONSE', message.requestId, { ok: false, error: error?.message || '扩展上下文已失效，请重新加载扩展' });
+  }
 });
 
 sendToPage('READY', 'startup', { version: chrome.runtime.getManifest().version });

@@ -30,6 +30,25 @@ async function proxyFetch(url) {
   return response.response;
 }
 
+async function fetchReportWithFallback(ip, origin) {
+  const origins = [origin, 'http://127.0.0.1:8081', 'http://localhost:8081'].filter((value, index, list) => value && list.indexOf(value) === index);
+  let lastError = null;
+  for (const base of origins) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch(`${base}/api/v1/ip?ip=${encodeURIComponent(ip)}`, { cache: 'no-store', headers: { Accept: 'application/json' }, signal: controller.signal });
+      const report = await response.json().catch(() => ({}));
+      if (response.ok) return report;
+      lastError = new Error(report?.error || `IP 查询失败（HTTP ${response.status}）`);
+      if (![502, 503, 504, 522, 524].includes(response.status)) throw lastError;
+    } catch (error) {
+      lastError = error?.name === 'AbortError' ? new Error('IP 查询超时，请稍后重试') : error;
+    } finally { clearTimeout(timeout); }
+  }
+  throw lastError || new Error('IP 查询失败');
+}
+
 function renderReport(report, trace) {
   const network = report?.network || {};
   const location = report?.location || {};
@@ -58,9 +77,7 @@ async function loadProfile() {
     setText(fields.version, trace.ip.includes(':') ? 'IPv6' : 'IPv4');
     setText(fields.country, trace.loc);
     const origin = await pageOrigin();
-    const response = await fetch(`${origin}/api/v1/ip?ip=${encodeURIComponent(trace.ip)}`, { cache: 'no-store', headers: { Accept: 'application/json' } });
-    const report = await response.json();
-    if (!response.ok) throw new Error(report?.error || `IP 查询失败（HTTP ${response.status}）`);
+    const report = await fetchReportWithFallback(trace.ip, origin);
     renderReport(report, trace);
     fields.state.className = 'eyebrow is-ready';
     fields.stateLabel.textContent = '查询完成';
@@ -77,10 +94,12 @@ async function loadProfile() {
 fields.refresh.addEventListener('click', loadProfile);
 document.querySelector('#open-page').addEventListener('click', async () => {
   const origin = await pageOrigin();
-  const target = `${origin}/streaming.html`;
-  const tabs = await chrome.tabs.query({ url: [`${origin}/streaming.html*`, `${origin}/streaming*`] });
+  const target = `${origin}/streaming`;
+  const tabs = await chrome.tabs.query({ url: [`${origin}/streaming*`, `${origin}/streaming*`] });
   if (tabs[0]?.id) return chrome.tabs.update(tabs[0].id, { active: true });
   return chrome.tabs.create({ url: target });
 });
 
 loadProfile();
+
+
