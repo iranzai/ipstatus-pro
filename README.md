@@ -18,10 +18,10 @@ https://github.com/iranzai/ipstatus-pro
 2. 开启右上角“开发者模式”。
 3. 点击“加载已解压的扩展程序”。
 4. 选择解压目录中的 `ipstatuspro` 文件夹。
-5. 打开 `https://ipstatus.net/streaming`，或本地开发地址 `http://127.0.0.1:8081/streaming`。
+5. 打开 `https://ipstatus.net/streaming`。
 6. 页面提示未连接时，点击“重新连接”；扩展代码更新后，在扩展卡片上点击“重新加载”，再刷新检测页。
 
-扩展申请 `proxy` 权限只为读取当前 Chrome 代理状态；它不会调用 `chrome.proxy.settings.set` 修改配置。`https://*/*` 权限用于出口探测、IP API 与流媒体平台请求，后台请求会沿用 Chrome 当前代理路径。本地开发地址权限仅用于访问 `127.0.0.1:8081` 或 `localhost:8081` 的 ipstatus API。
+扩展申请 `proxy` 权限只为读取当前 Chrome 代理状态；它不会调用 `chrome.proxy.settings.set` 修改配置。`https://*/*` 权限用于出口探测、IP API 与流媒体平台请求，后台请求会沿用 Chrome 当前代理路径。
 
 ## 通信边界
 
