@@ -1,8 +1,10 @@
 # ipstatuspro
 
-ipstatus pro（扩展目录名 `ipstatuspro`）是 ipstatus 的 Chrome Manifest V3 扩展。点击扩展图标时，它会沿用 Chrome 当前代理路径读取出口 IP，并调用 ipstatus API 显示 ASN、组织、国家、城市、经纬度与时区。弹窗可直接进入流媒体检测页。
+ipstatus pro（扩展目录名 `ipstatuspro`）是 ipstatus 的 Chrome Manifest V3 扩展。点击扩展图标时，它会沿用 Chrome 当前代理路径读取出口 IP，并直接调用 RIPE Stat 的 Network Info、AS Overview、RIR Geo 与 MaxMind GeoLite 数据显示 ASN、组织、注册国、国家、城市和经纬度，不依赖 ipstatus 服务端。弹窗可直接进入流媒体检测页。
 
 扩展同时作为流媒体检测页的受限网络桥。平台清单、检测规则和结果判定均由网站维护，更新检测规则不需要重新安装扩展。
+
+弹窗会分别探测 IPv4 与 IPv6 出口；当前网络同时具备双栈出口时，可以通过 IP 卡片右上角的下拉菜单切换，并复制当前选中的地址。切换协议后会重新读取对应 IP 的 RIPE 网络与地理信息。
 
 ## 安装方式
 
@@ -17,11 +19,11 @@ https://github.com/iranzai/ipstatus-pro
 1. 打开 `chrome://extensions/`。
 2. 开启右上角“开发者模式”。
 3. 点击“加载已解压的扩展程序”。
-4. 选择解压目录中的 `ipstatuspro` 文件夹。
-5. 打开 `https://ipstatus.net/streaming`。
+4. 选择解压目录中的 `chrome-extension` 文件夹。
+5. 打开 `https://ipstatus.net/streaming`，或本地开发地址 `http://127.0.0.1:8081/streaming`。
 6. 页面提示未连接时，点击“重新连接”；扩展代码更新后，在扩展卡片上点击“重新加载”，再刷新检测页。
 
-扩展申请 `proxy` 权限只为读取当前 Chrome 代理状态；它不会调用 `chrome.proxy.settings.set` 修改配置。`https://*/*` 权限用于出口探测、IP API 与流媒体平台请求，后台请求会沿用 Chrome 当前代理路径。
+扩展申请 `proxy` 权限只为读取当前 Chrome 代理状态；它不会调用 `chrome.proxy.settings.set` 修改配置。`https://*/*` 权限用于出口探测、IP API 与流媒体平台请求，后台请求会沿用 Chrome 当前代理路径。本地开发地址权限仅用于访问 `127.0.0.1:8081` 或 `localhost:8081` 的 ipstatus API。
 
 ## 通信边界
 

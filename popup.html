@@ -17,22 +17,21 @@
     <div class="eyebrow"><i id="state-dot"></i><span>CURRENT BROWSER EXIT</span><b id="state-label">正在检测</b></div>
     <section class="ip-summary">
       <small>当前出口 IP</small>
-      <strong id="ip-address">正在读取…</strong>
-      <span id="ip-version">--</span>
+      <div class="ip-value-row"><strong id="ip-address">正在读取…</strong><button class="copy-ip" id="copy-ip" type="button" title="复制 IP" aria-label="复制当前出口 IP">⧉</button></div>
+      <select id="ip-version" aria-label="选择 IPv4 或 IPv6 出口"><option value="">正在检测</option></select>
     </section>
 
     <section class="profile-grid" aria-label="IP 基础信息">
-      <div><small>ASN</small><strong id="asn">--</strong></div>
-      <div><small>公司 / 组织</small><strong id="company">--</strong></div>
-      <div><small>国家 / 地区</small><strong id="country">--</strong></div>
-      <div><small>城市</small><strong id="city">--</strong></div>
-      <div class="wide"><small>经纬度</small><strong id="coordinates">--</strong></div>
-      <div class="wide"><small>时区</small><strong id="timezone">--</strong></div>
+      <div class="wide"><small>ASN</small><strong class="profile-line"><span id="asn">--</span><span id="company">--</span></strong></div>
+      <div><small>定位</small><strong id="country">--</strong></div>
+      <div><small>类型</small><strong id="ip-nature">--</strong></div>
+      <div><small>地区</small><strong id="city">--</strong></div>
+      <div><small>经纬度</small><strong id="coordinates">--</strong></div>
     </section>
 
     <p class="error" id="error" hidden></p>
     <button class="primary-button" id="open-page" type="button">流媒体检测 <span>→</span></button>
-    <p class="note">出口探测与查询请求沿用 Chrome 当前网络和代理设置。</p>
+    <p class="note">IPv4 与 IPv6 出口会分别探测；未显示的协议表示当前网络或代理没有返回对应出口。</p>
   </main>
   <script src="popup.js"></script>
 </body>
